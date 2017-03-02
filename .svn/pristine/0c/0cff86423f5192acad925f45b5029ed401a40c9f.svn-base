@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/layout_bg"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/timePicker1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:padding="@dimen/_20px_in720p">
+
+        <com.sitemap.beijingtrain.view.WheelTimeView
+            android:id="@+id/year"
+            android:layout_width="@dimen/_150px_in720p"
+            android:layout_height="wrap_content" />
+
+        <com.sitemap.beijingtrain.view.WheelTimeView
+            android:id="@+id/month"
+            android:layout_width="@dimen/_120px_in720p"
+            android:layout_height="wrap_content" />
+
+        <com.sitemap.beijingtrain.view.WheelTimeView
+            android:id="@+id/day"
+            android:layout_width="@dimen/_120px_in720p"
+            android:layout_height="wrap_content" />
+
+        <com.sitemap.beijingtrain.view.WheelTimeView
+            android:id="@+id/hour"
+            android:layout_width="@dimen/_120px_in720p"
+            android:layout_height="wrap_content" />
+
+        <com.sitemap.beijingtrain.view.WheelTimeView
+            android:id="@+id/mins"
+            android:layout_width="@dimen/_120px_in720p"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_20px_in720p">
+
+        <Button
+            android:id="@+id/btn_datetime_cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="取消" />
+
+        <Button
+            android:id="@+id/btn_datetime_sure"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="确定" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

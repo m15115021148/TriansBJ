@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context="com.sitemap.beijingtrain.activity.HelpActivity">
+
+    <RelativeLayout
+        android:background="@color/black"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_90px_in720p">
+        
+        <LinearLayout
+            android:id="@+id/help_back"
+            android:gravity="center"
+            android:layout_alignParentLeft="true"
+            android:layout_width="@dimen/_100px_in720p"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:background="@drawable/back_index"
+                android:layout_width="@dimen/_25px_in720p"
+                android:layout_height="@dimen/_35px_in720p"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_35px_in720p"
+            android:text="帮助"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:scrollbars="none"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:padding="@dimen/_20px_in720p"
+                android:textColor="@color/black_dan"
+                android:textSize="@dimen/_36px_in720p"
+                android:text="1.首页都显示那些信息"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:layout_marginRight="@dimen/_20px_in720p"
+                android:layout_marginLeft="@dimen/_20px_in720p"
+                android:background="@color/grey_dan"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_2px_in720p"/>
+
+            <LinearLayout
+                android:padding="@dimen/_20px_in720p"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:background="@drawable/help_03"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_600px_in720p" />
+
+                <LinearLayout
+                    android:layout_marginLeft="@dimen/_20px_in720p"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/help_one"
+                        android:textSize="@dimen/_30px_in720p"
+                        android:textColor="@color/txt_hui"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!--2-->
+            <TextView
+                android:padding="@dimen/_20px_in720p"
+                android:textColor="@color/black_dan"
+                android:textSize="@dimen/_36px_in720p"
+                android:text="2.怎么筛选要查询的车次信息"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:layout_marginRight="@dimen/_20px_in720p"
+                android:layout_marginLeft="@dimen/_20px_in720p"
+                android:background="@color/grey_dan"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_2px_in720p"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:padding="@dimen/_20px_in720p"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_500px_in720p">
+
+                <ImageView
+                    android:layout_marginRight="@dimen/_10px_in720p"
+                    android:background="@drawable/help_06"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" />
+
+                <ImageView
+                    android:layout_marginLeft="@dimen/_10px_in720p"
+                    android:background="@drawable/help_08"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+
+            <TextView
+                android:padding="@dimen/_20px_in720p"
+                android:id="@+id/help_two"
+                android:textSize="@dimen/_30px_in720p"
+                android:textColor="@color/txt_hui"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!--3-->
+            <TextView
+                android:padding="@dimen/_20px_in720p"
+                android:textColor="@color/black_dan"
+                android:textSize="@dimen/_36px_in720p"
+                android:text="3.怎么查看统计信息及地图显示情况"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:layout_marginRight="@dimen/_20px_in720p"
+                android:layout_marginLeft="@dimen/_20px_in720p"
+                android:background="@color/grey_dan"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_2px_in720p"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:padding="@dimen/_20px_in720p"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_400px_in720p">
+
+                <ImageView
+                    android:layout_marginRight="@dimen/_10px_in720p"
+                    android:background="@drawable/help_12"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" />
+
+                <ImageView
+                    android:layout_marginLeft="@dimen/_10px_in720p"
+                    android:background="@drawable/help_13"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
+            <TextView
+                android:paddingLeft="@dimen/_20px_in720p"
+                android:paddingRight="@dimen/_20px_in720p"
+                android:text="统计信息"
+                android:textSize="@dimen/_30px_in720p"
+                android:textColor="@color/txt_hui"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:padding="@dimen/_20px_in720p"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_400px_in720p">
+
+                <ImageView
+                    android:layout_marginRight="@dimen/_10px_in720p"
+                    android:background="@drawable/help_16"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" />
+
+                <ImageView
+                    android:layout_marginLeft="@dimen/_10px_in720p"
+                    android:background="@drawable/help_17"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+
+            <TextView
+                android:paddingLeft="@dimen/_20px_in720p"
+                android:paddingRight="@dimen/_20px_in720p"
+                android:text="查看地图"
+                android:textSize="@dimen/_30px_in720p"
+                android:textColor="@color/txt_hui"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_100px_in720p"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+</LinearLayout>

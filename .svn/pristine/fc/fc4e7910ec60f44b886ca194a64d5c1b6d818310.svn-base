@@ -1,0 +1,149 @@
+package com.sitemap.beijingtrain.fragment;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListView;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.sitemap.beijingtrain.R;
+import com.sitemap.beijingtrain.adapter.MpagerAdapter;
+import com.sitemap.beijingtrain.adapter.TrainListViewAdapter;
+import com.sitemap.beijingtrain.application.MyApplication;
+import com.sitemap.beijingtrain.config.RequestCode;
+import com.sitemap.beijingtrain.config.WebUrlConfig;
+import com.sitemap.beijingtrain.http.HttpUtil;
+import com.sitemap.beijingtrain.model.TemperatureModel;
+import com.sitemap.beijingtrain.util.ToastUtil;
+import com.sitemap.beijingtrain.view.RoundProgressDialog;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 温度数据fragment
+ * Created by chenhao on 2016/12/16.
+ */
+
+public class HomePageFragment extends Fragment {
+    private ListView lv;//listview视图
+    private RoundProgressDialog progressDialog;//加载 条
+    private Context mContext;//本类
+    private List<TemperatureModel> temList = new ArrayList<TemperatureModel>();//查询的数据
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mContext = getActivity();
+        View view = inflater.inflate(R.layout.fragment_homepage, container, false);
+        lv = (ListView) view.findViewById(R.id.list_view);
+        Bundle bundle = getArguments();
+        String time = bundle.getString(MpagerAdapter.TIME);
+        String type = bundle.getString(MpagerAdapter.TYPE);
+        String tarinId = bundle.getString(MpagerAdapter.TRAIN_ID);
+        getNetData(tarinId, time, type);
+        return view;
+    }
+
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (progressDialog != null && progressDialog.isShowing()) {
+                progressDialog.dismiss();// 关闭进度条
+            }
+            switch (msg.what) {
+                case HttpUtil.SUCCESS:
+                    JSONObject ob = JSON.parseObject(msg.obj.toString());
+                    temList = JSON.parseArray(ob.getString("rows"), TemperatureModel.class);
+                    if(temList!=null&&temList.size()>0){
+                        TrainListViewAdapter mListViewAdapter = new TrainListViewAdapter(mContext, temList);
+                        lv.setAdapter(mListViewAdapter);
+                    }else {
+                        MyApplication.setEmptyShowText(mContext, lv, "暂无数据");
+                        lv.setAdapter(null);
+                    }
+
+                    break;
+                case HttpUtil.FAILURE:
+                    ToastUtil.showBottomShort(mContext, RequestCode.ERRORINFO);
+//                    break;
+                case HttpUtil.EMPTY:
+//                    break;
+                default:
+                    MyApplication.setEmptyShowText(mContext, lv, "暂无数据");
+                    lv.setAdapter(null);
+                    break;
+            }
+
+        }
+    };
+
+
+    /**
+     * 获取网络数据
+     */
+    private void getNetData(String trainId, String time, String type) {
+        HttpUtil http = new HttpUtil(handler);
+        if (MyApplication.getNetObject().isNetConnected()) {
+            progressDialog = RoundProgressDialog.createDialog(mContext);
+            if (progressDialog != null && !progressDialog.isShowing()) {
+                progressDialog.show();
+            }
+            http.sendGet(RequestCode.QUERYTEMPERATURE, WebUrlConfig.queryTemperature(trainId,
+                    time, time, type, ""));
+        } else {
+            ToastUtil.showBottomShort(mContext, RequestCode.NOLOGIN);
+        }
+    }
+
+    /**
+     * listview 是否可以下拉刷新
+     * @return
+     */
+    public boolean canPullDown() {
+        if (lv == null) {
+            return false;
+        }
+        if (lv.getCount() == 0) {
+            // 没有item的时候也可以下拉刷新
+            return true;
+        } else if (lv.getFirstVisiblePosition() == 0) {
+            if (lv.getChildAt(0)==null){
+                return false;
+            }else{
+                if (lv.getChildAt(0).getTop() >= 0){
+                    // 滑到ListView的顶部了
+                    return true;
+                }
+            }
+            return false;
+        }
+            return false;
+    }
+
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+}

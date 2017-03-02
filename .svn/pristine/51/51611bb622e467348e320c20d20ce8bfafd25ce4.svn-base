@@ -1,0 +1,104 @@
+package com.sitemap.beijingtrain.config;
+
+/**
+ * @author chenhao
+ * @ClassName: WebUrlConfig.java
+ * @Description: 网络url（接口）配置文件
+ * @Date 2015-11-14
+ */
+
+public class WebUrlConfig {
+    private static final String HOST_NAME = WebHostConfig.getHostName();
+    private static final String LOGIN = HOST_NAME + "dbAction_loginAndroid.do?";//登录
+
+    private static final String GETALLTRAIN = HOST_NAME + "dbAction_getAllTrain.do?";//获取所有列车车次(AllTrainModel)
+    private static final String QUERYTEMPERATURE = HOST_NAME + "dbAction_searchAllTemperature.do?";//查询某个条件下的车厢温度
+    private static final String GETTIMES = HOST_NAME + "dbAction_getTimes.do?";
+    private static final String GETCHARTSDATA = HOST_NAME + "dbAction_searchHighchartsData.do?";
+    private static final String SEARCHPOSITION = HOST_NAME + "dbAction_searchPosition.do?";//查询位置信息
+    private static final String SEARCHPOSITIONTRACK=HOST_NAME + "dbAction_searchPositionTrack.do?";//查询位置轨迹
+
+    /**
+     * 获取所有列车车次
+     *
+     * @return
+     */
+    public static String getAllTrain() {
+        return GETALLTRAIN;
+    }
+
+    /**
+     * 查询某个条件下的车厢温度
+     *
+     * @param train_id 车次id
+     * @param s_time   开始时间
+     * @param e_time   结束时间
+     * @param type     级别（普通《默认》1、故障2、报警3）
+     * @param page     页码（分页查询,默认为0）
+     * @return
+     */
+    public static String queryTemperature(String train_id, String s_time, String e_time, String type, String page) {
+        return QUERYTEMPERATURE + "train_id=" + train_id + "&s_time=" + s_time + "&e_time=" + e_time + "&type=" + type + "&page=" + page;
+    }
+
+    /**
+     * 获取时间点
+     *
+     * @param train_id id
+     * @param s_time   开始时间
+     * @param e_time   结束时间
+     * @param type
+     * @return
+     */
+    public static String getTimes(String train_id, String s_time, String e_time, String type) {
+        return GETTIMES + "s_time=" + s_time + "&e_time=" + e_time + "&train_id=" + train_id + "&type=" + type;
+    }
+
+    /**
+     * 获得统计图信息
+     *
+     * @param train_id
+     * @param s_time
+     * @param e_time
+     * @param chexiang
+     * @return
+     */
+    public static String getChartsData(String train_id, String s_time, String e_time, String chexiang) {
+        return GETCHARTSDATA + "s_time=" + s_time + "&e_time=" + e_time + "&train_id=" + train_id + "&type=" + "";
+    }
+
+    /**
+     * 登陆操作
+     *
+     * @param mac 手机mac地址
+     * @return
+     */
+    public static String login(String mac) {
+        return LOGIN + "mac=" + mac;
+    }
+
+
+    /**
+     *  获得位置信息
+     *
+     * @param time
+     * @param checi
+     * @return
+     */
+    public static String searchPosition(String time, String checi) {
+        return SEARCHPOSITION + "checi=" + checi + "&time=" + time;
+    }
+
+    /**
+     *
+     * 获得位置轨迹
+     * @param time
+     * @param checi
+     * @return
+     */
+    public static String searchPositionTrack(String time, String checi) {
+        return SEARCHPOSITIONTRACK + "checi=" + checi;
+    }
+}
+
+	

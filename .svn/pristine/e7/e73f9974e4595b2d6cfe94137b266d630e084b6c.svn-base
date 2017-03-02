@@ -1,0 +1,54 @@
+package com.sitemap.beijingtrain.activity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.sitemap.beijingtrain.R;
+
+/**
+ * @desc 帮助
+ * @author chenmeng created by 2016/10/25
+ */
+public class HelpActivity extends BaseActivity implements View.OnClickListener{
+    private LinearLayout mBack;//返回上一层
+    private TextView tvOne,tvTwo;//文本
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_help);
+        mBack = (LinearLayout) findViewById(R.id.help_back);
+        mBack.setOnClickListener(this);
+        tvOne = (TextView) findViewById(R.id.help_one);
+        tvTwo = (TextView) findViewById(R.id.help_two);
+        initData();
+    }
+
+    /**
+     * 初始化数据
+     */
+    private void initData() {
+        tvOne.setText(
+                "1.列表类别，分别为全部，故障及告警三类\n\n"+
+                "2.菜单选项\n\n"+
+                "3.查询的车次，可点击选择\n\n"+
+                "4.查询时间，可在条件查询中设置\n\n"+
+                "5.时间表，可滑动切换时刻\n\n"+
+                "6.黄色表示故障\n\n"+
+                "7.红色表示告警"
+        );
+        tvTwo.setText(
+                "可以通过点击首页”车次“后面的序号来直接选择车次查询，也可通过首页右上角菜单选项里面的条件查询来查看车次信息。"
+        );
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        if (v == mBack){
+            finish();
+        }
+    }
+}

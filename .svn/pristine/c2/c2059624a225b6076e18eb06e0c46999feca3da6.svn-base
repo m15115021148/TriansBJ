@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context="com.sitemap.beijingtrain.acitivity.BottomActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_90px_in720p"
+        android:background="@color/black"
+        android:padding="@dimen/_5px_in720p">
+
+        <LinearLayout
+            android:id="@+id/map_point"
+            android:layout_width="@dimen/_100px_in720p"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="@dimen/_40px_in720p"
+                android:layout_height="@dimen/_40px_in720p"
+                android:background="@drawable/map_point" />
+
+        </LinearLayout>
+
+        <RadioGroup
+            android:id="@+id/radio_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/radio_group_bg"
+            android:orientation="horizontal">
+
+            <RadioButton
+                style="@style/Train_radio_style"
+                android:layout_marginLeft="@dimen/_4px_in720p"
+                android:layout_marginRight="@dimen/_2px_in720p"
+                android:background="@drawable/rb_checked_left_bg"
+                android:checked="false"
+                android:text="全部" />
+
+            <RadioButton
+                style="@style/Train_radio_style"
+                android:layout_marginLeft="@dimen/_2px_in720p"
+                android:layout_marginRight="@dimen/_2px_in720p"
+                android:background="@drawable/rb_checked_middle_bg"
+                android:text="故障" />
+
+            <RadioButton
+                style="@style/Train_radio_style"
+                android:layout_marginLeft="@dimen/_2px_in720p"
+                android:layout_marginRight="@dimen/_4px_in720p"
+                android:background="@drawable/rb_checked_right_bg"
+                android:checked="false"
+                android:text="告警" />
+
+        </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/menu_click"
+            android:layout_width="@dimen/_100px_in720p"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/trian_menu"
+                android:layout_width="@dimen/_40px_in720p"
+                android:layout_height="@dimen/_35px_in720p"
+                android:background="@drawable/menu_n" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <com.sitemap.beijingtrain.view.PullToRefreshLayout
+        android:id="@+id/refresh_view"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            layout="@layout/refresh_head"
+             />
+
+        <com.sitemap.beijingtrain.view.PullableLinearLayout
+            android:id="@+id/pull_layout"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <!--时间点-->
+            <RelativeLayout
+                android:id="@+id/layout1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_70px_in720p"
+                android:background="@color/white">
+
+                <TextView
+                    android:id="@+id/train_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/_20px_in720p"
+                    android:text="车次:"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_30px_in720p" />
+
+                <TextView
+                    android:id="@+id/check_trains"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/train_name"
+                    android:ellipsize="end"
+                    android:gravity="left"
+                    android:singleLine="true"
+                    android:text="全部"
+                    android:textColor="@color/lan_dan"
+                    android:textSize="@dimen/_28px_in720p" />
+
+                <TextView
+                    android:id="@+id/check_times"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/_10px_in720p"
+                    android:layout_marginRight="@dimen/_20px_in720p"
+                    android:layout_toRightOf="@+id/check_trains"
+                    android:gravity="right"
+                    android:singleLine="true"
+                    android:text="2016.10.22 12:10-2016.10.22 19:30"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_28px_in720p" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/train_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!--滚动的时间-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_77px_in720p"
+                    android:background="@color/black"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/jiantou" />
+                </LinearLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rvContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_80px_in720p"
+                    android:background="@color/black"
+                    android:scrollbars="none" />
+
+                <!--listview-->
+                <LinearLayout
+                    android:id="@+id/list_view_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:padding="@dimen/_20px_in720p">
+
+                    <LinearLayout
+                        android:id="@+id/layout2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="@dimen/_150px_in720p"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/train_item_bg"
+                            android:gravity="center"
+                            android:paddingBottom="@dimen/_10px_in720p"
+                            android:paddingTop="@dimen/_10px_in720p"
+                            android:singleLine="true"
+                            android:text="车厢/编号"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_30px_in720p" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/train_item_bg"
+                            android:gravity="center"
+                            android:paddingBottom="@dimen/_10px_in720p"
+                            android:paddingTop="@dimen/_10px_in720p"
+                            android:singleLine="true"
+                            android:text="1-8号轴温+环温（℃）"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_30px_in720p" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:id="@+id/container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.sitemap.beijingtrain.view.CallbackListView
+                            android:id="@+id/list_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:divider="@null"
+                            android:scrollbars="none" />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/is_show"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/_100px_in720p"
+                    android:text="暂无数据"
+                    android:textColor="@color/black_dan"
+                    android:textSize="@dimen/_35px_in720p" />
+
+            </LinearLayout>
+
+
+        </com.sitemap.beijingtrain.view.PullableLinearLayout>
+
+        <include
+            layout="@layout/load_more"
+            android:visibility="gone" />
+
+    </com.sitemap.beijingtrain.view.PullToRefreshLayout>
+
+
+
+
+</LinearLayout >

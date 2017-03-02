@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.sitemap.beijingtrain.acitivity.MapActivity">
+    <RelativeLayout
+        android:background="@color/black"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_90px_in720p">
+
+        <LinearLayout
+            android:id="@+id/map_back"
+            android:gravity="center"
+            android:layout_alignParentLeft="true"
+            android:layout_width="@dimen/_100px_in720p"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:background="@drawable/back_index"
+                android:layout_width="@dimen/_25px_in720p"
+                android:layout_height="@dimen/_35px_in720p" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_35px_in720p"
+            android:text="地图"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/guiji"
+            android:layout_width="@dimen/_32px_in720p"
+            android:layout_height="@dimen/_32px_in720p"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="@dimen/_40px_in720p"
+            android:background="@drawable/guiji"
+            android:textSize="@dimen/_25px_in720p"/>
+    </RelativeLayout>
+    <com.baidu.mapapi.map.MapView
+        android:id="@+id/bmapView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="@dimen/_90px_in720p"
+        android:clickable="true" />
+    <LinearLayout
+        android:id="@+id/map_change_lay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/_40px_in720p"
+        android:layout_marginTop="@dimen/_120px_in720p"
+        android:gravity="center">
+        <TextView
+            android:id="@+id/map_change_img"
+            android:layout_width="@dimen/_73px_in720p"
+            android:layout_height="@dimen/_73px_in720p"
+            android:background="@drawable/weixing"/>
+        <TextView
+            android:id="@+id/map_change_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_24px_in720p"
+            android:text="卫星图"/>
+    </LinearLayout>
+
+</RelativeLayout>

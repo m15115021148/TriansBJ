@@ -1,0 +1,115 @@
+package com.sitemap.beijingtrain.util;
+
+import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
+import android.animation.ValueAnimator;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.content.Context;
+import android.view.animation.LinearInterpolator;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+
+/**
+ * Description: 主界面listview左右切换动画效果
+ * @author chenhao
+ * @date 2016-10-28
+ */
+public class HomepageAnimaUtil {
+
+	private Context context;
+
+	/**
+	 * 当前动画是否结束(保证单例)
+	 */
+	private boolean isStop = true;
+
+	/**
+	 * 动画结束回调对象
+	 */
+	private AnimationEndCallBack callback;
+
+	public HomepageAnimaUtil(Context context) {
+		this.context = context;
+	}
+
+	/**
+	 * 实现动画播放
+	 * @param listview
+	 * @param parent
+	 */
+	public void play(ListView listview, final RelativeLayout parent
+					 ) {
+		if (!isStop) {
+			return;
+		}
+		isStop = false;
+		// 生成主题动画对象
+		final ListView objectAnima = listview;
+		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+				100, 100);
+		// 将生成的对象添加父控件（也就是动画可移动的区域）中
+		parent.addView(objectAnima, params);
+
+		// 开始控件的起始坐标(绝对坐标)
+		int[] startPosition = new int[2];
+		listview.getLocationInWindow(startPosition);
+
+		// 实现属性动画
+		ValueAnimator anima = ValueAnimator
+				.ofFloat(0, listview.getWidth());
+		anima.setDuration(800);
+		anima.setInterpolator(new LinearInterpolator());// 插值器：匀速变化
+		anima.addUpdateListener(new AnimatorUpdateListener() {
+
+			@Override
+			public void onAnimationUpdate(ValueAnimator animation) {
+				float mCurrentX = (Float) animation.getAnimatedValue();
+				objectAnima.setTranslationX(mCurrentX);
+
+			}
+		});
+		anima.start();
+		anima.addListener(new AnimatorListener() {
+
+			@Override
+			public void onAnimationStart(Animator animation) {
+
+			}
+
+			@Override
+			public void onAnimationRepeat(Animator animation) {
+
+			}
+
+			@Override
+			public void onAnimationEnd(Animator animation) {
+				isStop = true;
+				parent.removeView(objectAnima);
+				if (getCallback() != null) {
+					getCallback().onAnimationEnd();
+				}
+			}
+
+			@Override
+			public void onAnimationCancel(Animator animation) {
+
+			}
+		});
+
+	}
+
+	public AnimationEndCallBack getCallback() {
+		return callback;
+	}
+
+	public void setCallback(AnimationEndCallBack callback) {
+		this.callback = callback;
+	}
+
+	/**
+	 * 动画结束回调接口
+	 */
+	public interface AnimationEndCallBack {
+		public void onAnimationEnd();
+	}
+}

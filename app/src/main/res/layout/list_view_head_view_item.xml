@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+
+    >
+
+    <TextView
+        android:paddingBottom="@dimen/_10px_in720p"
+        android:paddingTop="@dimen/_10px_in720p"
+        android:layout_width="@dimen/_150px_in720p"
+        android:layout_height="wrap_content"
+        android:background="@drawable/train_item_bg"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="车厢/编号"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_30px_in720p" />
+
+    <TextView
+        android:paddingBottom="@dimen/_10px_in720p"
+        android:paddingTop="@dimen/_10px_in720p"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/train_item_bg"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="1-8号轴温+环温（℃）"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_30px_in720p" />
+
+</LinearLayout>

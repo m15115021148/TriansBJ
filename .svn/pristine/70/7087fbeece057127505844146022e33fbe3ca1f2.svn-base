@@ -1,0 +1,99 @@
+package com.sitemap.beijingtrain.view;
+
+import android.content.Context;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.widget.ListView;
+
+/**
+ * 左右滑动事件回调
+ * Created by chenhao on 2016/11/23.
+ */
+
+public class CallbackListView extends ListView {
+    /**
+     * 手指按下时的x坐标
+     */
+    private float mDownX;
+    /**
+     * 手指抬起时的x坐标
+     */
+    private float mUpX;
+    /**
+     * x轴方向，手指滑动距离
+     */
+    private float mBetwween;
+
+    /**
+     * 回调接口
+     */
+    private ListViewCallback callback;
+    public CallbackListView(Context context) {
+        this(context,null);
+    }
+
+    public CallbackListView(Context context, AttributeSet attrs) {
+        this(context, attrs,0);
+    }
+
+    public CallbackListView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+    @Override
+    public int getCount() {
+        if (this.getAdapter()==null){
+            return 0;
+        }
+        return super.getCount();
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        mBetwween=w/5;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch(event.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                mDownX=event.getX();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                break;
+            case MotionEvent.ACTION_UP:
+                mUpX=event.getX();
+                if((mUpX-mDownX)>mBetwween){
+                    if(getCallback()!=null){
+                        getCallback().updateListView(true);
+                    }
+                }
+                if((mDownX-mUpX)>mBetwween){
+                    if(getCallback()!=null){
+                        getCallback().updateListView(false);
+                    }
+                }
+
+                break;
+        }
+        return super.onTouchEvent(event);
+    }
+
+    public ListViewCallback getCallback() {
+        return callback;
+    }
+
+    public void setCallback(ListViewCallback callback) {
+        this.callback = callback;
+    }
+
+   public interface ListViewCallback {
+        /**
+         *
+         * @param orientation true从左向右滑动，false 从右向左滑动
+         */
+        public void updateListView (boolean orientation);
+    }
+}

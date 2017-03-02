@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+
+        <LinearLayout
+            android:id="@+id/train_bg"
+            android:layout_width="@dimen/_150px_in720p"
+            android:layout_height="@dimen/_200px_in720p"
+            android:background="@drawable/train_item_bg"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/train_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="01"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_90px_in720p" />
+
+            <TextView
+                android:id="@+id/train_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="1010111"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/_28px_in720p" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_200px_in720p"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout style="@style/Train_item_style">
+
+                        <TextView
+                            android:id="@+id/tem1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="22"
+                            android:textColor="@color/black" />
+
+                        <ImageView
+                            android:layout_width="@dimen/_30px_in720p"
+                            android:layout_height="@dimen/_30px_in720p"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:background="@drawable/tem_1" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout style="@style/Train_item_style">
+
+                        <TextView
+                            android:id="@+id/tem3"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="22"
+                            android:textColor="@color/black" />
+
+                        <ImageView
+                            android:layout_width="@dimen/_30px_in720p"
+                            android:layout_height="@dimen/_30px_in720p"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:background="@drawable/tem_3" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout style="@style/Train_item_style">
+
+                        <TextView
+                            android:id="@+id/tem5"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="22"
+                            android:textColor="@color/black" />
+
+                        <ImageView
+                            android:layout_width="@dimen/_30px_in720p"
+                            android:layout_height="@dimen/_30px_in720p"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:background="@drawable/tem_5" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout style="@style/Train_item_style">
+
+                        <TextView
+                            android:id="@+id/tem7"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="22"
+                            android:textColor="@color/black" />
+
+                        <ImageView
+                            android:layout_width="@dimen/_30px_in720p"
+                            android:layout_height="@dimen/_30px_in720p"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:background="@drawable/tem_7" />
+
+                    </RelativeLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout style="@style/Train_item_style">
+
+                        <TextView
+                            android:id="@+id/tem2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="22"
+                            android:textColor="@color/black" />
+
+                        <ImageView
+                            android:layout_width="@dimen/_30px_in720p"
+                            android:layout_height="@dimen/_30px_in720p"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:background="@drawable/tem_2" />
+
+                    </RelativeLayout>
+
+
+                    <RelativeLayout style="@style/Train_item_style">
+
+                        <TextView
+                            android:id="@+id/tem4"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="22"
+                            android:textColor="@color/black" />
+
+                        <ImageView
+                            android:layout_width="@dimen/_30px_in720p"
+                            android:layout_height="@dimen/_30px_in720p"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:background="@drawable/tem_4" />
+
+                    </RelativeLayout>
+
+
+                    <RelativeLayout style="@style/Train_item_style">
+
+                        <TextView
+                            android:id="@+id/tem6"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="22"
+                            android:textColor="@color/black" />
+
+                        <ImageView
+                            android:layout_width="@dimen/_30px_in720p"
+                            android:layout_height="@dimen/_30px_in720p"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:background="@drawable/tem_6" />
+
+                    </RelativeLayout>
+
+
+                    <RelativeLayout style="@style/Train_item_style">
+
+                        <TextView
+                            android:id="@+id/tem8"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="22"
+                            android:textColor="@color/black" />
+
+                        <ImageView
+                            android:layout_width="@dimen/_30px_in720p"
+                            android:layout_height="@dimen/_30px_in720p"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:background="@drawable/tem_8" />
+
+                    </RelativeLayout>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/train_item_bg">
+
+                <RelativeLayout style="@style/Train_item_style">
+
+                    <TextView
+                        android:id="@+id/tem9"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="22"
+                        android:textColor="@color/black" />
+
+                    <ImageView
+                        android:layout_width="@dimen/_30px_in720p"
+                        android:layout_height="@dimen/_30px_in720p"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/_5px_in720p"
+                        android:background="@drawable/tem_p" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_20px_in720p"
+        android:background="@drawable/train_item_bg" />
+
+</LinearLayout>

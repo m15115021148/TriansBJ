@@ -1,0 +1,593 @@
+package com.sitemap.beijingtrain.activity;
+
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Bundle;
+import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.alibaba.fastjson.JSON;
+import com.sitemap.beijingtrain.R;
+import com.sitemap.beijingtrain.adapter.MpagerAdapter;
+import com.sitemap.beijingtrain.adapter.RecyclerViewAdapter;
+import com.sitemap.beijingtrain.application.MyApplication;
+import com.sitemap.beijingtrain.config.RequestCode;
+import com.sitemap.beijingtrain.config.WebUrlConfig;
+import com.sitemap.beijingtrain.http.HttpUtil;
+import com.sitemap.beijingtrain.model.AllTrainModel;
+import com.sitemap.beijingtrain.model.ChartsDataModel;
+import com.sitemap.beijingtrain.model.LineChartModel;
+import com.sitemap.beijingtrain.model.PieChartModel;
+import com.sitemap.beijingtrain.model.TimeModel;
+import com.sitemap.beijingtrain.model.TimesListModel;
+import com.sitemap.beijingtrain.util.DateUtil;
+import com.sitemap.beijingtrain.util.ToastUtil;
+import com.sitemap.beijingtrain.view.PullToRefreshLayout;
+import com.sitemap.beijingtrain.view.PullableLinearLayout;
+import com.sitemap.beijingtrain.view.RoundProgressDialog;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author chenmeng
+ * @desc 主页显示页面
+ */
+public class BottomActivity extends BaseActivity implements View.OnClickListener
+        , PullToRefreshLayout.OnRefreshListener, ViewPager.OnPageChangeListener, View.OnTouchListener {
+    private BottomActivity mContext;//本类
+    private HttpUtil http;//网络请求
+    private List<AllTrainModel> list = new ArrayList<>();//数据
+    private RadioGroup group;//radiogroup
+    private ImageView mMenu;//菜单
+    private LinearLayout check, chart, map, help, menu;//菜单工具事件
+    private PopupWindow pop;//popupwindow
+    private RecyclerView rvContainer;//时间点的滑动视图
+    private int offX;//总的横向移动距离
+    private int width = 0;//item的宽度
+    private int height = 0;//屏幕的高度
+    private List<TimeModel> lTimeModel = new ArrayList<TimeModel>();//数据集合
+    private RecyclerViewAdapter mRecyclerAdapter = null;//时间点的适配器
+    private int index = 2;//绿色的起始下标（数据下标）
+    private LinearLayout mLayout;//布局是否显示 没有数据不显示下面
+    private TextView mTrain, mTimes;//车次，时间段(默认从当前时间到前3个小时)
+    private TextView empty;//空白控件
+    private String type;//请求类型
+    private RoundProgressDialog progressDialog;//加载 条
+    private String selTrains = "", selSTime, selETime;//选择的车次编号，起始时间，终止时间
+    private String trainId;//车次数据库ID
+    private List<TimesListModel> timeList;//获取时间点的数据
+    private long exitTime = 0;//退出的时间
+    private LinearLayout mMap;//地图
+    private PullToRefreshLayout mRefresh;//刷新
+    private PullableLinearLayout mPullLayout;//刷新的布局
+    private final int DISTANCE_TIME = 24;//时间间隔（多久小时之前的数据）
+
+    //    左右滑动
+    private ViewPager mViewPager;
+    private MpagerAdapter pagerAdapter;
+    /**
+     * 上一个页面
+     */
+    private int LastPosition = 0;
+    /**
+     * 页面底部切换
+     */
+    private boolean bottomChange = true;
+    //屏幕触摸点
+    float lastY = 0;
+    float currentY = 0;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_bottom);
+        mContext = this;
+        WindowManager wm = this.getWindowManager();
+        width = wm.getDefaultDisplay().getWidth();
+        height = wm.getDefaultDisplay().getHeight();
+        initView();
+        initRadioButton();
+        initNet();
+    }
+
+    /**
+     * 初始化view
+     */
+    private void initView() {
+        mPullLayout = (PullableLinearLayout) findViewById(R.id.pull_layout);
+        group = (RadioGroup) findViewById(R.id.radio_group);
+        mMenu = (ImageView) findViewById(R.id.trian_menu);
+        rvContainer = (RecyclerView) findViewById(R.id.rvContainer);
+        mLayout = (LinearLayout) findViewById(R.id.train_layout);
+        mTimes = (TextView) findViewById(R.id.check_times);
+        mTrain = (TextView) findViewById(R.id.check_trains);
+        empty = (TextView) findViewById(R.id.empty);
+        mTrain.setOnClickListener(this);
+        menu = (LinearLayout) findViewById(R.id.menu_click);
+        menu.setOnClickListener(this);
+        mMap = (LinearLayout) findViewById(R.id.map_point);
+        mMap.setOnClickListener(this);
+        mRefresh = (PullToRefreshLayout) findViewById(R.id.refresh_view);
+        mRefresh.setOnRefreshListener(this);
+        initScrollTimeDate();
+
+        mViewPager = (ViewPager) findViewById(R.id.mViewPager);
+        mViewPager.setPageMargin(15);//页面间距
+        mViewPager.setOnTouchListener(this);
+    }
+
+    /**
+     * 初始化radio
+     */
+    private void initRadioButton() {
+        final RadioButton rb1 = (RadioButton) group.getChildAt(0);
+        final RadioButton rb2 = (RadioButton) group.getChildAt(1);
+        final RadioButton rb3 = (RadioButton) group.getChildAt(2);
+        rb1.setChecked(true);
+        type = "";
+        group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                timeList.clear();
+                lTimeModel.clear();
+                if (checkedId == rb1.getId()) {
+                    type = "";
+                    getTimesData(trainId, selSTime, selETime, type);
+                }
+                if (checkedId == rb2.getId()) {
+                    type = "2";
+                    getTimesData(trainId, selSTime, selETime, type);
+                }
+                if (checkedId == rb3.getId()) {
+                    type = "3";
+                    getTimesData(trainId, selSTime, selETime, type);
+                }
+            }
+        });
+    }
+
+    /**
+     * 初始化网络
+     */
+    private void initNet() {
+        http = new HttpUtil(handler);
+        if (MyApplication.getNetObject().isNetConnected()) {
+            http.sendGet(RequestCode.GETALLTRAIN, WebUrlConfig.getAllTrain());
+        } else {
+            mRefresh.refreshFinish(PullToRefreshLayout.FAIL);
+            ToastUtil.showBottomShort(mContext, RequestCode.NOLOGIN);
+        }
+    }
+
+    /**
+     * 获取时间点
+     */
+    private void getTimesData(String id, String s_time, String e_time, String type) {
+        if (MyApplication.getNetObject().isNetConnected()) {
+            progressDialog = RoundProgressDialog.createDialog(mContext);
+            if (progressDialog != null && !progressDialog.isShowing()) {
+                progressDialog.setMessage("加载中...");
+                progressDialog.show();
+            }
+            //获取数据 时间点
+            http.sendGet(RequestCode.GETTIMES, WebUrlConfig.getTimes(
+                    id, s_time, e_time, type
+            ));
+        } else {
+            mRefresh.refreshFinish(PullToRefreshLayout.FAIL);
+            ToastUtil.showBottomShort(mContext, RequestCode.NOLOGIN);
+        }
+    }
+
+    /**
+     * 获得统计图信息
+     *
+     * @param id
+     * @param s_time
+     * @param e_time
+     * @param chexiang
+     */
+    private void getChartsData(String id, String s_time, String e_time, String chexiang) {
+        if (MyApplication.getNetObject().isNetConnected()) {
+            progressDialog = RoundProgressDialog.createDialog(mContext);
+            if (progressDialog != null && !progressDialog.isShowing()) {
+                progressDialog.setMessage("加载中...");
+                progressDialog.show();
+            }
+            //获得统计图信息
+            http.sendGet(RequestCode.GETCHARTSDATA, WebUrlConfig.getChartsData(
+                    id, s_time, e_time, chexiang
+            ));
+        } else {
+            ToastUtil.showBottomShort(mContext, RequestCode.NOLOGIN);
+        }
+    }
+
+    @SuppressLint("HandlerLeak")
+    private Handler handler = new Handler() {
+        @SuppressLint("NewApi")
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (progressDialog != null && progressDialog.isShowing()) {
+                progressDialog.dismiss();// 关闭进度条
+            }
+            switch (msg.what) {
+                case HttpUtil.SUCCESS:
+                    if (msg.arg1 == RequestCode.GETTIMES) {//获取时间点
+                        timeList = JSON.parseArray(msg.obj.toString(), TimesListModel.class);
+                        mLayout.setVisibility(View.VISIBLE);
+                        empty.setVisibility(View.GONE);
+                        offX = 0;
+                        index = 2;
+                        lTimeModel.clear();
+                        TimeModel tm0 = new TimeModel();
+//                        首端添加两个空白块
+                        lTimeModel.add(tm0);
+                        lTimeModel.add(tm0);
+                        for (int i = 0; i < timeList.size(); i++) {
+                            TimeModel tm = new TimeModel();
+                            tm.setTime(timeList.get(i).getTime());
+                            tm.setType(0);
+                            lTimeModel.add(tm);
+                        }
+                        //  末端添加两个空白块
+                        lTimeModel.add(tm0);
+                        lTimeModel.add(tm0);
+//                        设置首选项
+                        lTimeModel.get(index).setType(1);
+                        initRecylcerData(lTimeModel);
+                        if (pagerAdapter != null) {
+                            mRefresh.refreshFinish(PullToRefreshLayout.SUCCEED);
+                        }
+//                        初始化fragment
+                        Log.e("result","type:"+type);
+                        pagerAdapter = new MpagerAdapter(getSupportFragmentManager(), trainId, type, timeList);
+                        mViewPager.setAdapter(pagerAdapter);
+                        mViewPager.setOnPageChangeListener(mContext);
+                        mPullLayout.setPagerAdapter(pagerAdapter);
+                    }
+                    if (msg.arg1 == RequestCode.GETALLTRAIN) {//获取所有的车次信息
+                        list = JSON.parseArray(msg.obj.toString(), AllTrainModel.class);
+                        MyApplication.lTrainModel = list;
+                        trainId = list.get(0).getTrain_id();
+                        selSTime = DateUtil.getCurrentAgeTime(DISTANCE_TIME);
+                        selETime = DateUtil.getNYRSFDate();
+                        mTrain.setText(list.get(0).getNumber());
+                        mTimes.setText(selSTime + "-" + selETime);
+                        getTimesData(trainId, selSTime, selETime, type);
+                    }
+                    if (msg.arg1 == RequestCode.GETCHARTSDATA) {//获取统计数据
+                        ChartsDataModel model = JSON.parseObject(msg.obj.toString(), ChartsDataModel.class);
+                        if (model != null) {
+                            List<PieChartModel> right = model.getRight();
+                            List<LineChartModel> top = model.getTop();
+                            if (right != null && right.size() > 0 && top != null && top.size() > 0) {
+                                Intent intent = new Intent(mContext, ChartsActivity.class);
+                                intent.putExtra("pieChart", JSON.toJSONString(right));
+                                intent.putExtra("lineChart", JSON.toJSONString(top));
+                                intent.putExtra("s_time", selSTime);
+                                intent.putExtra("e_time", selETime);
+                                startActivity(intent);
+                            } else {
+                                ToastUtil.showBottomShort(mContext, "暂无统计数据");
+                            }
+                        }
+                    }
+                    break;
+                case HttpUtil.FAILURE:
+                    mRefresh.refreshFinish(PullToRefreshLayout.FAIL);
+                    ToastUtil.showBottomShort(mContext, RequestCode.ERRORINFO);
+                    if (msg.arg1 == RequestCode.GETTIMES) {//获取时间点
+                        empty.setVisibility(View.VISIBLE);
+                    }
+                    if (msg.arg1 == RequestCode.GETALLTRAIN) {//获取所有的车次信息
+                        empty.setVisibility(View.VISIBLE);
+                    }
+                    break;
+                case HttpUtil.EMPTY://数据为 [] "";
+                    if (msg.arg1 == RequestCode.GETTIMES) {//获取时间点
+                        mRefresh.refreshFinish(PullToRefreshLayout.SUCCEED);
+                        mLayout.setVisibility(View.GONE);
+                        empty.setVisibility(View.VISIBLE);
+                    }
+                    if (msg.arg1 == RequestCode.GETALLTRAIN) {//获取所有的车次信息
+                        ToastUtil.showBottomLong(mContext, "获取车次失败，请重新查询");
+                        empty.setVisibility(View.VISIBLE);
+                    }
+                    if (msg.arg1 == RequestCode.GETCHARTSDATA) {//获取统计数据
+                    }
+                    break;
+                case RequestCode.CHANGE:
+                    int pos = Integer.parseInt(msg.obj.toString());
+                    mViewPager.setCurrentItem(pos - 2);
+                    break;
+                default:
+            }
+        }
+    };
+
+    /**
+     * 初始化时间点的数据
+     */
+    private void initRecylcerData(List<TimeModel> list) {
+        mRecyclerAdapter = new RecyclerViewAdapter(BottomActivity.this, list);
+        rvContainer.setAdapter(mRecyclerAdapter);
+        mRecyclerAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * 初始化时间控件数据
+     */
+    private void initScrollTimeDate() {
+        width = width / 5;
+        LinearLayoutManager ll = new LinearLayoutManager(this);//这个是必须的，是设置是横向还是竖向滑动
+        ll.setOrientation(LinearLayoutManager.HORIZONTAL);//横向
+        rvContainer.setLayoutManager(ll);
+        rvContainer.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {//这个是状态监听
+                super.onScrollStateChanged(recyclerView, newState);
+                switch (newState) {
+                    case RecyclerView.SCROLL_STATE_IDLE:// 停止滑动状态
+                        int scrollX = offX % width;
+                        int scroll = 0;
+                        if (scrollX > width / 2) {
+                            scroll = width - scrollX;
+                        } else {
+                            scroll = -scrollX;
+                        }
+                        rvContainer.smoothScrollBy(scroll, 0);//如果不用smoothScrollBy（）方法就没有平缓滑动效果
+//                        更新滚轴数据
+                        lTimeModel.get(index).setType(0);
+                        index = 2 + offX / width;
+                        lTimeModel.get(index).setType(1);
+                        mRecyclerAdapter.notifyDataSetChanged();
+                        if (bottomChange) {
+//            时间轴滑动
+                            return;
+                        }
+                        if (scroll == 0 && scrollX == 0) {//停止滑动时，请求数据
+                            handler.postDelayed(new Runnable() {
+
+                                public void run() {
+                                    if (offX % width == 0) {
+                                        Message msg = handler.obtainMessage();
+                                        msg.what = RequestCode.CHANGE;
+//                                        msg.arg1 = 1;
+                                        msg.obj = index;
+                                        handler.sendMessage(msg);
+                                    }
+                                }
+                            }, 100);
+                        }
+                        break;
+                    case RecyclerView.SCROLL_STATE_DRAGGING://开始滑动状态
+
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {//这个回调很重要，这个dx,dy 表示的是偏移量，把所有偏移量累加即可得到滑动的总距离，注意值有正负表示左右滑动
+                offX += dx;
+            }
+        });
+
+        rvContainer.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                bottomChange = false;
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v == menu) {
+            initPopupWindow();
+        }
+        if (v == check) {
+            Intent intent = new Intent(mContext, CheckActivity.class);
+            startActivityForResult(intent, RequestCode.FLAGCHECK);
+            pop.dismiss();
+        }
+        if (v == chart) {
+            if (timeList != null && timeList.size() > 0) {
+                getChartsData(trainId, selSTime, selETime, selTrains);
+            } else {
+                ToastUtil.showBottomShort(mContext, "暂无统计数据");
+            }
+            pop.dismiss();
+        }
+        if (v == mMap) {
+            if (timeList != null && timeList.size() > 0) {
+                Intent intent = new Intent(mContext, MapActivity.class);
+                intent.putExtra("checi", mTrain.getText().toString());
+                intent.putExtra("time", lTimeModel.get(index).getTime());
+                intent.putExtra("selSTime", selSTime);
+                intent.putExtra("selETime", selETime);
+                startActivity(intent);
+            } else {
+                ToastUtil.showBottomShort(mContext, "暂无位置数据");
+            }
+        }
+        if (v == help) {
+            Intent intent = new Intent(mContext, HelpActivity.class);
+            startActivity(intent);
+            pop.dismiss();
+        }
+        if (v == mTrain) {//车次点击事件
+            Intent intent = new Intent(mContext, CheckActivity.class);
+            startActivityForResult(intent, RequestCode.FLAGCHECK);
+        }
+    }
+
+    /**
+     * 初始化pop数据
+     */
+    private void initPopupWindow() {
+        pop = new PopupWindow(this);
+        View customView = getLayoutInflater().inflate(R.layout.menu_pop_item_layout, null);
+        check = (LinearLayout) customView.findViewById(R.id.menu_check);
+        chart = (LinearLayout) customView.findViewById(R.id.menu_chart);
+        map = (LinearLayout) customView.findViewById(R.id.menu_map);
+        help = (LinearLayout) customView.findViewById(R.id.menu_help);
+        check.setOnClickListener(this);
+        chart.setOnClickListener(this);
+        map.setOnClickListener(this);
+        help.setOnClickListener(this);
+        pop.setContentView(customView);
+        pop.setWidth(width * 5 / 3);
+        pop.setHeight(height / 4);
+        pop.setFocusable(true);
+        pop.setBackgroundDrawable(new BitmapDrawable());
+        backgroundAlpha(1f);
+        pop.showAsDropDown(mMenu, 0, 0);
+    }
+
+    /**
+     * 设置添加屏幕的背景透明度
+     *
+     * @param bgAlpha
+     */
+    public void backgroundAlpha(float bgAlpha) {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = bgAlpha; //0.0-1.0
+        getWindow().setAttributes(lp);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (resultCode) {
+            case RequestCode.FLAGCHECK:
+                timeList.clear();
+                selTrains = data.getStringExtra("trains");
+                selSTime = data.getStringExtra("s_time");
+                selETime = data.getStringExtra("e_time");
+                trainId = data.getStringExtra("trains_id");
+                mTrain.setText(selTrains);
+                mTimes.setText(selSTime.replace("-", ".") + "-" + selETime.replace("-", "."));
+                getTimesData(trainId, selSTime, selETime, type);
+                break;
+        }
+    }
+
+    /**
+     * 退出activity
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK
+                && event.getAction() == KeyEvent.ACTION_DOWN) {
+
+            if ((System.currentTimeMillis() - exitTime) > 2000) {
+                Toast.makeText(this, "再按一次退出程序!",
+                        Toast.LENGTH_SHORT).show();
+                exitTime = System.currentTimeMillis();
+            } else {
+                //退出所有的activity
+                Intent intent = new Intent();
+                intent.setAction(BaseActivity.TAG_ESC_ACTIVITY);
+                sendBroadcast(intent);
+                System.exit(0);
+                finish();
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    /**
+     * 下拉刷新
+     *
+     * @param pullToRefreshLayout
+     */
+    @Override
+    public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
+//        if ((currentY - lastY) < 25) {
+//            滑动距离太小
+//            return;
+//        }
+        timeList.clear();
+        selSTime = DateUtil.getCurrentAgeTime(DISTANCE_TIME);
+        selETime = DateUtil.getNYRSFDate();
+        mTimes.setText(selSTime + "-" + selETime);
+        getTimesData(trainId, selSTime, selETime, type);
+    }
+
+    /**
+     * 无
+     *
+     * @param pullToRefreshLayout
+     */
+    @Override
+    public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
+
+    }
+
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+
+    @Override
+    public void onPageSelected(int position) {
+
+        if (!bottomChange) {
+            LastPosition = position;
+//            时间轴滑动
+            return;
+        }
+        int scroll = 0;
+        if (position > LastPosition) {
+            scroll = width;
+        } else {
+            scroll = -width;
+        }
+        rvContainer.smoothScrollBy(scroll, 0);
+        LastPosition = position;
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        bottomChange = true;
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                lastY = v.getY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                currentY = v.getY();
+                break;
+        }
+        return false;
+    }
+}
